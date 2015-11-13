@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<title>qr</title>
+
+		<link rel="shortcut icon" href="qr.png">
+
+		<script src="http://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+		<script src="http://cdnjs.cloudflare.com/ajax/libs/jquery.qrcode/1.0/jquery.qrcode.min.js"></script>
+
+		<style>
+			#target {
+				position: absolute;
+				left: 0;
+				right: 0;
+				bottom: 0;
+			}
+			.things {
+				margin: 0 auto;
+				width: 100%;
+				max-width: 50em;
+				display: block;
+			}
+			#error {
+				color: #ee3300;
+				text-align: center;
+				font-family: "Gill Sans", "Futura", sans-serif;
+				padding: 1em;
+			}
+			#lol {
+				padding: 0.5em 1em;
+				height: 12em;
+				transition: border-color 0.25s;
+				text-align: center;
+				border-radius: 1em;
+				line-height: 1.5em;
+				color: #cccccc;
+				border: 1px solid #ccc;
+			}
+			#lol.error:focus, #lol.error {
+				border-color: #ee3300;
+			}
+			#lol:focus {
+				outline: 0;
+				border-color: #f6f6f6;
+			}
+			#code {
+				margin: 0 auto;
+				width: 500px;
+				height: 500px;
+				padding: 100px;
+			}
+		</style>
+	</head>
+	 
+	<body>
+		<div id="target">
+			<span id="error" class="things"></span>
+			<textarea id="lol" class="things"></textarea>
+			<div id="code"></div>
+		</div>
+	</body>
+
+		<script>
+			$('#lol').on('input', generateQR);
+
+			function generateQR() {
+				$('#code').empty();
+				$('#error').html('');
+				$('#lol').removeClass('error');
+				try {
+					$('#code').qrcode({
+						width: 500,
+						height: 500,
+						text: $('#lol').val()
+					});
+				} catch(err) {
+					$('#error').html(err);
+					$('#lol').addClass('error');
+				}
+			}
+		</script>
+</html>
