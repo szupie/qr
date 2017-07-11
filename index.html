@@ -37,15 +37,18 @@
 				max-width: 50em;
 				display: block;
 			}
+			#target {
+				text-align: center;
+			}
 			#error {
 				color: #ee3300;
 				text-align: center;
 				font-family: "Gill Sans", "Futura", sans-serif;
-				padding: 1em;
+				padding: 0 1em;
 			}
 			#lol {
 				padding: 0.5em 1em;
-				height: 12em;
+				height: 3em;
 				transition: border-color 0.25s;
 				text-align: center;
 				border-radius: 1em;
@@ -55,24 +58,60 @@
 			}
 			#lol.error:focus, #lol.error {
 				border-color: #ee3300;
+				margin-bottom: 1rem;
 			}
 			#lol:focus {
 				outline: 0;
 				border-color: #f6f6f6;
 			}
 			#code {
-				margin: 0 auto;
 				width: 500px;
 				height: 500px;
-				padding: 100px;
+				margin: 50px;
+				display: inline-block; /* inline flow-root */
+				position: relative;
+			}
+			#code canvas { /* cover parent decoration pseudoelements */
+				position: relative;
+				z-index: 1;
+			}
+			#code::before, #code::after {
+				content: '';
+				width: 0;
+				height: 0;
+				border: 50px solid transparent;
+				position: absolute;
+				animation: fadein 100ms ease-in;
+			}
+			#code::before {
+				border-top-color: #888888;
+				border-bottom-width: 0;
+				border-left-width: 0;
+				top: 0;
+				left: 0;
+				transform-origin: bottom right;
+			}
+			#code::after {
+				border-bottom-color: #888888;
+				border-top-width: 0;
+				border-right-width: 0;
+				bottom: 0;
+				right: 0;
+				transform-origin: top left;
+			}
+			@keyframes fadein {
+				from {
+					opacity: 0;
+					transform: scale(0.5);
+				}
 			}
 		</style>
 	</head>
 	 
 	<body>
 		<div id="target">
-			<span id="error" class="things"></span>
 			<textarea id="lol" class="things" autofocus></textarea>
+			<span id="error" class="things"></span>
 			<div id="code"></div>
 		</div>
 	</body>
