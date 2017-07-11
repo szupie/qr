@@ -6,8 +6,7 @@
 
 		<link rel="shortcut icon" href="qr.png">
 
-		<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
-		<script src="//cdnjs.cloudflare.com/ajax/libs/jquery.qrcode/1.0/jquery.qrcode.min.js"></script>
+		<script src="./VanillaQR/VanillaQR.min.js"></script>
 		<!-- The above library and plugin are licensed under the MIT license, reproduced below: -->
 		<!-- 
 			Permission is hereby granted, free of charge, to any person obtaining
@@ -56,6 +55,12 @@
 				color: #cccccc;
 				border: 1px solid #ccc;
 			}
+			#lol:invalid {
+				box-shadow: none; /* hide invalid red glow */
+			}
+			#lol:invalid ~ #code canvas {
+				display: none;
+			}
 			#lol.error:focus, #lol.error {
 				border-color: #ee3300;
 				margin-bottom: 1rem;
@@ -70,10 +75,14 @@
 				margin: 50px;
 				display: inline-block; /* inline flow-root */
 				position: relative;
+				max-width: 100vw;
+				max-height: 100vh;
 			}
 			#code canvas { /* cover parent decoration pseudoelements */
 				position: relative;
 				z-index: 1;
+				max-width: 100%;
+				max-height: 100%;
 			}
 			#code::before, #code::after {
 				content: '';
@@ -110,29 +119,31 @@
 	 
 	<body>
 		<div id="target">
-			<textarea id="lol" class="things" autofocus></textarea>
+			<textarea id="lol" class="things" required autofocus></textarea>
 			<span id="error" class="things"></span>
 			<div id="code"></div>
 		</div>
 	</body>
 
-		<script>
-			$('#lol').on('input', generateQR);
+	<script>
+		const scanCodeNode = document.getElementById('code');
+		const inputNode = document.getElementById('lol');
 
-			function generateQR() {
-				$('#code').empty();
-				$('#error').html('');
-				$('#lol').removeClass('error');
-				try {
-					$('#code').qrcode({
-						width: 500,
-						height: 500,
-						text: $('#lol').val()
-					});
-				} catch(err) {
-					$('#error').html(err);
-					$('#lol').addClass('error');
-				}
-			}
-		</script>
+		let qr = new VanillaQR({
+			size: window.innerWidth,
+			ecclevel: 4,
+			noBorder: true
+		});
+		generateQR();
+		scanCodeNode.appendChild(qr.domElement);
+
+		inputNode.addEventListener('input', generateQR);
+
+		function generateQR() {
+			const newValue = inputNode.value;
+
+			qr.url = newValue;
+			qr.init();
+		}
+	</script>
 </html>
