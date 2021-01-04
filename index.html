@@ -17,6 +17,7 @@
 				width: 100%;
 				max-width: 50em;
 				display: block;
+				color: #595959;
 			}
 			body {
 				text-align: center;
@@ -29,15 +30,17 @@
 				text-align: center;
 				border-radius: 1em;
 				line-height: 1.5em;
-				color: #cccccc;
 				border: 1px solid #ccc;
+			}
+			#plaintext::placeholder {
+				font-style: italic;
 			}
 			#plaintext:invalid {
 				box-shadow: none; /* hide invalid red glow */
 			}
 			#plaintext:focus {
 				outline: 0;
-				border-color: #f6f6f6;
+				border-color: #666;
 			}
 			#barcode {
 				display: inline-block; /* inline flow-root */
@@ -47,8 +50,8 @@
 			#barcode canvas {
 				width: 100vmin;
 				height: 100vmin;
-				max-width: calc(100vh - 4rem);
-				max-height: calc(100vh - 4rem);
+				max-width: 500px;
+				max-height: 500px;
 				padding: 2rem;
 				transition: opacity 100ms ease-in-out;
 
@@ -79,16 +82,16 @@
 				border-top-color: #888888;
 				border-bottom-width: 0;
 				border-left-width: 0;
-				top: 0;
-				left: 0;
+				top: 2rem;
+				left: 2rem;
 				transform-origin: bottom right;
 			}
 			#barcode::after {
 				border-bottom-color: #888888;
 				border-top-width: 0;
 				border-right-width: 0;
-				bottom: 0;
-				right: 0;
+				bottom: 2rem;
+				right: 2rem;
 				transform-origin: top left;
 			}
 			@keyframes fadein {
@@ -97,33 +100,46 @@
 					transform: scale(0.5);
 				}
 			}
-
+			#ecc-label {
+				display: flex;
+				align-items: center;
+				justify-content: center;
+			}
+			input[type=range] {
+				height: 48px;
+				margin-left: 1rem;
+			}
 		</style>
 	</head>
 	 
 	<body>
-		<textarea id="plaintext" class="text" required autofocus></textarea>
+		<textarea id="plaintext" class="text" placeholder="Enter data" required autofocus></textarea>
+		<label class="text" id="ecc-label">Error correction level
+		  <input type="range" value="1" min="1" max="4" id="ecc">
+		</label>
 		<div id="barcode"></div>
 	</body>
 
 	<script>
 		const barcodeNode = document.getElementById('barcode');
 		const inputNode = document.getElementById('plaintext');
+		const eccNode = document.getElementById('ecc');
 
 		let qr = new VanillaQR({
-			ecclevel: 4,
 			noBorder: true
 		});
 		generateQR();
 		barcodeNode.appendChild(qr.domElement);
 
 		inputNode.addEventListener('input', generateQR);
+		eccNode.addEventListener('input', generateQR);
 
 		function generateQR() {
 			const newValue = inputNode.value;
 
 			qr.url = newValue;
 			qr.size = Math.min(window.innerWidth, window.innerHeight);
+			qr.ecclevel = eccNode.value;
 			qr.init();
 		}
 	</script>
